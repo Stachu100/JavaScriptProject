@@ -1,0 +1,20 @@
+{
+  "name": "javascriptproject",
+  "version": "1.0.0",
+  "main": "DashBoard.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stachu100/JavaScriptProject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Stachu100/JavaScriptProject/issues"
+  },
+  "homepage": "https://github.com/Stachu100/JavaScriptProject#readme",
+  "description": ""
+}
