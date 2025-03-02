@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dodaj książkę</title>
+    <link rel="stylesheet" href="Style/style.css">
+</head>
+<body>
+    <h2>Dodaj książkę</h2>
+    <form>
+        <label for="author">Autor:</label>
+        <input type="text" id="author" name="author" required>
+        
+        <label for="title">Tytuł:</label>
+        <input type="text" id="title" name="title" required>
+        
+        <label for="cover">Zdjęcie książki:</label>
+        <input type="file" id="cover" name="cover" accept="image/*" required>
+        
+        <button type="submit">Dodaj książkę</button>
+    </form>
+</body>
+</html>
