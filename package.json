@@ -16,5 +16,8 @@
     "url": "https://github.com/Stachu100/JavaScriptProject/issues"
   },
   "homepage": "https://github.com/Stachu100/JavaScriptProject#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
 }
