@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const { open } = require("sqlite");
 
 const app = express();
 const PORT = 3000;
@@ -16,16 +17,43 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "WebPage", "index.html"));
 });
 
-// Obsługa logowania (przykładowy użytkownik)
-app.post("/login", (req, res) => {
-    const { username, password } = req.body;
+// Funkcja do połączenia z bazą danych i wykonania zapytania 
 
-    if (username === "admin" && password === "admin") {
-        res.redirect("/Main.html"); // Przekierowanie na stronę główną
-    } else {
-        res.send("Błędny login lub hasło. <a href='/'>Spróbuj ponownie</a>");
+
+async function connectDB() {
+    try {
+        console.log("🔍 Importowanie sqlite...");
+        const sqlite = await import("sqlite").catch(err => console.error(" Błąd importu sqlite:", err));
+
+        if (!sqlite) {
+            console.error(" SQLite nie zostało załadowane!");
+            return;
+        }
+
+        console.log(" Otwieranie bazy danych...");
+        const db = await open({
+            filename: path.join(__dirname, "library.db"),
+            driver: sqlite.Database
+        }).catch(err => console.error(" Błąd otwierania bazy:", err));
+
+        const books = await db("SELECT * FROM Books");
+        console.log("Dane z tabeli Books:", books);
+
+        if (!db) {
+            console.error(" Nie udało się otworzyć bazy!");
+            return;
+        }
+
+        console.log("Połączono z bazą danych Library.db");
+        return db;
+    } catch (error) {
+        console.error("Błąd połączenia z bazą danych:", error);
     }
-});
+}
+
+console.log("Próba połączenia z bazą danych...");
+connectDB();
+
 
 // Uruchomienie serwera
 app.listen(PORT, () => {
