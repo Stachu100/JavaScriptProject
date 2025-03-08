@@ -1,64 +1,75 @@
 const express = require("express");
 const path = require("path");
-const sqlite3 = require("sqlite3"); // Używamy sqlite3 jako zależności
+const sqlite3 = require("sqlite3");
 const sqlite = require("sqlite");
+const multer = require("multer");
 
 const app = express();
 const PORT = 3000;
 
-// Udostępniamy pliki statyczne z folderów WebPage, CSS i Function
+// Udostępnianie plików statycznych
 app.use(express.static(path.join(__dirname, "WebPage")));
 app.use(express.static(path.join(__dirname, "CSS")));
 app.use(express.static(path.join(__dirname, "Function")));
-
+app.use(express.static(path.join(__dirname, 'bookcover')));
 app.use(express.urlencoded({ extended: true }));
 
-// Przekierowanie domyślne na stronę logowania
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "WebPage", "index.html"));
-});
-
-// Funkcja do połączenia z bazą danych i wykonania zapytania 
+// Połączenie z bazą danych
 async function connectDB() {
     try {
-        console.log("Importowanie sqlite...");
-        
-        // Sprawdzamy, czy sqlite3 jest zainstalowane
-        if (!sqlite3) {
-            console.error("sqlite3 nie jest dostępne");
-            return;
-        }
-
         console.log("Otwieranie bazy danych...");
         const db = await sqlite.open({
             filename: path.join(__dirname, "database.sqlite"),
             driver: sqlite3.Database
         });
-
-        if (!db) {
-            console.error("Nie udało się otworzyć bazy danych.");
-            return;
-        }
-
-        console.log("Baza danych otwarta!");
-
-        // Sprawdzenie danych z tabeli Books
-        try {
-            const books = await db.all("SELECT * FROM Books");
-            console.log("Dane z tabeli Books:", books);
-        } catch (err) {
-            console.error("Błąd przy pobieraniu danych z tabeli Books:", err);
-        }
-
-        console.log("Połączono z bazą danych database.sqlite");
+        console.log("Połączono z bazą danych!");
         return db;
     } catch (error) {
         console.error("Błąd połączenia z bazą danych:", error);
     }
 }
 
-console.log("Próba połączenia z bazą danych...");
-connectDB();
+// Konfiguracja multer
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "bookcover/");
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
+
+// Obsługa dodawania książek
+app.post("/addBook", upload.single("Image"), async (req, res) => {
+    const { Author, Title } = req.body;
+    const Image = req.file ? req.file.filename : null;
+
+    if (!Author || !Title) {
+        return res.status(400).json({ message: "Autor i tytuł są wymagane!" });
+    }
+
+    try {
+        const db = await connectDB();
+        await db.run("INSERT INTO Books (Title, Author, Image) VALUES (?, ?, ?)", [Title, Author, Image]);
+        res.json({ message: "Książka dodana pomyślnie!" });
+    } catch (error) {
+        console.error("Błąd przy dodawaniu książki:", error);
+        res.status(500).json({ message: "Błąd serwera" });
+    }
+});
+
+app.get("/getBooks", async (req, res) => {
+    try {
+        const db = await connectDB();
+        const books = await db.all("SELECT * FROM Books");
+
+        res.json(books);
+    } catch (error) {
+        console.error("Błąd przy pobieraniu książek:", error);
+        res.status(500).json({ message: "Błąd serwera" });
+    }
+});
 
 // Uruchomienie serwera
 app.listen(PORT, () => {

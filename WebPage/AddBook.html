@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dodaj książkę</title>
-    <link rel="stylesheet" href="Style/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h2>Dodaj książkę</h2>
-    <form>
+    <form enctype="multipart/form-data">
         <label for="author">Autor:</label>
         <input type="text" id="author" name="author" required>
         
@@ -16,9 +16,12 @@
         <input type="text" id="title" name="title" required>
         
         <label for="cover">Zdjęcie książki:</label>
-        <input type="file" id="cover" name="cover" accept="image/*" required>
+        <input type="file" id="cover" name="cover" accept="image/*">
         
         <button type="submit">Dodaj książkę</button>
     </form>
+
+    <script src="/AddBook.js"></script>
+
 </body>
 </html>
