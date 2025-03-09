@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("loginForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // 🚨 Zapobiegamy domyślnej akcji formularza!
+        event.preventDefault();
 
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (username === user.username && password === user.password) {
             alert("Zalogowano pomyślnie!");
-            window.location.href = "Main.html"; // ✅ Przekierowanie na stronę główną
+            window.location.href = "Main.html";
         } else {
             alert("Nieprawidłowy login lub hasło.");
         }

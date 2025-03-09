@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const Author = document.getElementById("author").value;
         const Title = document.getElementById("title").value;
         const ImageInput = document.getElementById("cover");
-        const Image = ImageInput.files.length > 0 ? ImageInput.files[0] : null; // Jeśli plik nie istnieje, pozostaje null
+        const Image = ImageInput.files.length > 0 ? ImageInput.files[0] : null;
 
         if (!Author || !Title) {
             alert("Podaj autora i tytuł książki!");
@@ -18,18 +18,18 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append("Author", Author);
         formData.append("Title", Title);
         if (Image) {
-            formData.append("Image", Image); // Plik dodajemy tylko jeśli istnieje
+            formData.append("Image", Image);
         }
 
         try {
-            const response = await fetch("/addBook", {
+            const response = await fetch("books/addBook", {
                 method: "POST",
                 body: formData
             });
 
             const result = await response.json();
             alert(result.message);
-            form.reset(); // Czyścimy formularz po wysłaniu
+            form.reset();
         } catch (error) {
             console.error("Błąd dodawania książki:", error);
         }

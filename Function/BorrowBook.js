@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async function () {
     try {
-        const response = await fetch("/getBooks");
+        const response = await fetch("books/getBooks");
         const books = await response.json();
 
         const booksContainer = document.querySelector(".books-carousel");
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             bookCard.classList.add("book-card");
 
             const bookImage = document.createElement("img");
-            bookImage.src = book.Image; // Poprawiamy ścieżkę do obrazu
+            bookImage.src = book.Image;
             bookImage.alt = book.Title;
             bookImage.classList.add("book-image");
 
