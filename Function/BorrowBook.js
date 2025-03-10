@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             bookCard.classList.add("book-card");
 
             const bookImage = document.createElement("img");
-            bookImage.src = book.Image;
+            bookImage.src = book.Image ? book.Image : "brak_okladki.png";
             bookImage.alt = book.Title;
             bookImage.classList.add("book-image");
 
