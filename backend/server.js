@@ -6,10 +6,10 @@ const app = express();
 const PORT = 3000;
 
 // Udostępnianie plików
-app.use(express.static(path.join(__dirname, "WebPage")));
-app.use(express.static(path.join(__dirname, "CSS")));
-app.use(express.static(path.join(__dirname, "Function")));
-app.use(express.static(path.join(__dirname, 'bookcover')));
+app.use(express.static(path.join(__dirname, '..', 'public', 'bookcover')));
+app.use(express.static(path.join(__dirname, '..', 'public', 'html')));
+app.use(express.static(path.join(__dirname, '..', 'public', 'css')));
+app.use(express.static(path.join(__dirname, '..', 'public', 'js')));
 app.use(express.urlencoded({ extended: true }));
 
 // Użycie tras

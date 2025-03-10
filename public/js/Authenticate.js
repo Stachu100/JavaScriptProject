@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (username === user.username && password === user.password) {
             alert("Zalogowano pomyślnie!");
-            window.location.href = "Main.html";
+            window.location.href = "/Main.html";
         } else {
             alert("Nieprawidłowy login lub hasło.");
         }

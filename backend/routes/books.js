@@ -7,7 +7,7 @@ const router = express.Router();
 // Konfiguracja multer
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "bookcover/");
+        cb(null, "public/bookcover/");
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname));

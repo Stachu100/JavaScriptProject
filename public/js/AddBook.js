@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         try {
-            const response = await fetch("books/addBook", {
+            const response = await fetch("/books/addBook", {
                 method: "POST",
                 body: formData
             });

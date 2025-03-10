@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async function () {
     try {
-        const response = await fetch("books/getBooks");
+        const response = await fetch("/books/getBooks");
         const books = await response.json();
 
         const booksContainer = document.querySelector(".books-carousel");
