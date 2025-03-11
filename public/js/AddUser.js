@@ -11,15 +11,18 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        //const formData = new FormData();
         const formData = {
             UserName: Login,
             UserPassword: Password
         };
+
         try {
             const response = await fetch("/Users/addUser", {
                 method: "POST",
-                body: formData
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData)
             });
 
             const result = await response.json();

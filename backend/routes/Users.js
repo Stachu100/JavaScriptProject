@@ -1,14 +1,12 @@
 const express = require("express");
-const multer = require("multer");
-const connectDB = require("../db"); 
-const path = require("path");
+const connectDB = require("../db");
 const router = express.Router();
 
-// Obsługa dodawania użytkownika
+router.use(express.json());
+
 router.post("/addUser", async (req, res) => {
     const { UserName, UserPassword } = req.body;
 
-    // Walidacja danych
     if (!UserName || !UserPassword) {
         return res.status(400).json({ message: "Nazwa użytkownika i hasło są wymagane!" });
     }
@@ -21,7 +19,7 @@ router.post("/addUser", async (req, res) => {
             return res.status(400).json({ message: "Użytkownik o tej nazwie już istnieje!" });
         }
 
-        await db.run("INSERT INTO Users (UserName, UserPassword) VALUES (?, ?)", [UserName, UserPassword]);
+        await db.run("INSERT INTO Users (UserName, UserPassword, IsAdmin) VALUES (?, ?, ?)", [UserName, UserPassword, false]);
 
         res.json({ message: "Użytkownik dodany pomyślnie!" });
     } catch (error) {
