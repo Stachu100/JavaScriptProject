@@ -28,4 +28,30 @@ router.post("/addUser", async (req, res) => {
     }
 });
 
+router.post("/login", async (req, res) => {
+    const { UserName, UserPassword } = req.body;
+
+    if (!UserName || !UserPassword) {
+        return res.status(400).json({ message: "Nazwa użytkownika i hasło są wymagane!" });
+    }
+
+    try {
+        const db = await connectDB();
+        const user = await db.get("SELECT * FROM Users WHERE UserName = ?", [UserName]);
+
+        if (!user) {
+            return res.status(401).json({ message: "Nieprawidłowy login lub hasło." });
+        }
+
+
+        if (UserPassword === user.UserPassword) {
+            res.json({ success: true, message: "Zalogowano pomyślnie!" });
+        } else {
+            res.status(401).json({ success: false, message: "Nieprawidłowy login lub hasło." });
+        }
+    } catch (error) {
+        console.error("Błąd przy logowaniu użytkownika:", error);
+        res.status(500).json({ message: "Błąd serwera" });
+    }
+});
 module.exports = router;
