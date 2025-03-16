@@ -13,7 +13,6 @@ router.post("/addUser", async (req, res) => {
 
     try {
         const db = await connectDB();
-        // Sprawdzenie, czy użytkownik już istnieje
         const existingUser = await db.get("SELECT * FROM Users WHERE UserName = ?", [UserName]);
         if (existingUser) {
             return res.status(400).json({ message: "Użytkownik o tej nazwie już istnieje!" });
@@ -27,5 +26,32 @@ router.post("/addUser", async (req, res) => {
         res.status(500).json({ message: "Błąd serwera" });
     }
 });
+
+router.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const db = await connectDB();
+        const user = await db.get("SELECT * FROM Users WHERE UserName = ?", [username]);
+
+        if (!user) {
+            return res.status(400).json({ message: "Nieprawidłowa nazwa użytkownika lub hasło!" });
+        }
+
+        if (password !== user.UserPassword) {
+            return res.status(400).json({ message: "Nieprawidłowa nazwa użytkownika lub hasło!" });
+        }
+
+        res.json({ 
+            message: "Zalogowano!", 
+            user: { id: user.Id, username: user.UserName, isAdmin: user.IsAdmin } 
+        });
+
+    } catch (error) {
+        console.error("Błąd logowania:", error);
+        res.status(500).json({ message: "Błąd serwera" });
+    }
+});
+
 
 module.exports = router;
