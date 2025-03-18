@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const bookRoutes = require("./routes/books");
 const UserRoutes = require("./routes/Users");
+const borrowedBooksRoutes = require("./routes/borrowedBooks");
 
 const app = express();
 const PORT = 3000;
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 // Użycie tras
 app.use("/books", bookRoutes);
 app.use("/users", UserRoutes);
+app.use("/borrowedBooks", borrowedBooksRoutes);
 
 
 // Uruchomienie serwera
