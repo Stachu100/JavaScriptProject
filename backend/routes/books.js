@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const connectDB = require("../db"); 
 const path = require("path");
+const fs = require('fs');
 const router = express.Router();
 
 // Konfiguracja multer
@@ -82,6 +83,13 @@ router.put("/editBooks/:id", upload.single("Image"), async (req, res) => {
         const bookExists = await db.get("SELECT * FROM Books WHERE Id = ?", [id]);
         if (!bookExists) {
             return res.status(404).json({ message: "Książka nie istnieje." });
+        }
+
+        if (Image && bookExists.Image) {
+            const oldImagePath = path.join(__dirname, '..', '..', 'public', 'bookcover', bookExists.Image);
+            if (fs.existsSync(oldImagePath)) {
+                fs.unlinkSync(oldImagePath);
+            }
         }
 
         let sql = "UPDATE Books SET Title = ?, Author = ?, Genre = ?, MaxDays = ?";
