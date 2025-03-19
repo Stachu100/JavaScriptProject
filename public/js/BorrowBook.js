@@ -6,11 +6,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         const booksContainer = document.querySelector(".books-carousel");
 
         const user = JSON.parse(localStorage.getItem("user"));
-        
-        if (!user) {
-            alert("Musisz być zalogowany, aby wypożyczyć książkę!");
-            return;
-        }
 
         books.forEach(book => {
             const bookCard = document.createElement("div");
@@ -37,8 +32,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             borrowBtn.textContent = "Wypożycz";
 
             borrowBtn.addEventListener("click", async function () {
-                const userId = user.id;
-                const bookId = book.Id;
                 const borrowDate = new Date().toISOString();
                 const returnDate = new Date();
                 returnDate.setDate(returnDate.getDate() + 14);
@@ -51,8 +44,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            userId: userId,
-                            bookId: bookId,
+                            userId: user.id,
+                            bookId: book.Id,
                             borrowedDate: borrowDate,
                             returnDate: returnDateStr
                         })
@@ -70,6 +63,44 @@ document.addEventListener("DOMContentLoaded", async function () {
                     alert("Wystąpił błąd podczas wypożyczania książki.");
                 }
             });
+
+            if (user.isAdmin) {
+                const deleteBtn = document.createElement("button");
+                deleteBtn.classList.add("delete-btn");
+                deleteBtn.textContent = "Usuń";
+                deleteBtn.addEventListener("click", async function () {
+                    if (confirm(`Czy na pewno chcesz usunąć książkę: ${book.Title}?`)) {
+                        try {
+                            const response = await fetch(`/books/deleteBooks/${book.Id}`, {
+                                method: "DELETE"
+                            });
+
+                            const data = await response.json();
+
+                            if (response.ok) {
+                                alert(`Książka '${book.Title}' została usunięta!`);
+                                location.reload();
+                            } else {
+                                alert(`Błąd: ${data.message}`);
+                            }
+                        } catch (error) {
+                            console.error("Błąd przy usuwaniu książki:", error);
+                            alert("Wystąpił błąd podczas usuwania książki.");
+                        }
+                    }
+                });
+
+                const editBtn = document.createElement("button");
+                editBtn.classList.add("edit-btn");
+                editBtn.textContent = "Edytuj";
+                editBtn.addEventListener("click", function () {
+                localStorage.setItem("editBook", JSON.stringify(book));
+                window.location.href = "/EditBook.html";
+                });
+
+                bookCard.appendChild(deleteBtn);
+                bookCard.appendChild(editBtn);
+            }
 
             bookDetails.appendChild(bookTitle);
             bookDetails.appendChild(bookAuthor);

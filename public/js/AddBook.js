@@ -1,24 +1,28 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("form");
+    const form = document.querySelector("#bookForm");
 
     form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const Author = document.getElementById("author").value;
-        const Title = document.getElementById("title").value;
-        const ImageInput = document.getElementById("cover");
-        const Image = ImageInput.files.length > 0 ? ImageInput.files[0] : null;
+        const title = document.getElementById("title").value;
+        const author = document.getElementById("author").value;
+        const genre = document.getElementById("genre").value;
+        const maxDays = document.getElementById("maxDays").value;
+        const imageInput = document.getElementById("cover");
+        const image = imageInput.files.length > 0 ? imageInput.files[0] : null;
 
-        if (!Author || !Title) {
-            alert("Podaj autora i tytuł książki!");
+        if (!author || !title || !genre || !maxDays) {
+            alert("Podaj wszystkie wymagane dane!");
             return;
         }
 
         const formData = new FormData();
-        formData.append("Author", Author);
-        formData.append("Title", Title);
-        if (Image) {
-            formData.append("Image", Image);
+        formData.append("Title", title);
+        formData.append("Author", author);
+        formData.append("Genre", genre);
+        formData.append("MaxDays", maxDays);
+        if (image) {
+            formData.append("Image", image);
         }
 
         try {

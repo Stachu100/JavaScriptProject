@@ -17,20 +17,24 @@ const upload = multer({ storage: storage });
 
 // Obsługa dodawania książek
 router.post("/addBook", upload.single("Image"), async (req, res) => {
-    const { Author, Title } = req.body;
+    const { Title, Author, Genre, MaxDays } = req.body;
     const Image = req.file ? req.file.filename : null;
 
-    if (!Author || !Title) {
-        return res.status(400).json({ message: "Autor i tytuł są wymagane!" });
+    if (!Title || !Author || !Genre || !MaxDays) {
+        return res.status(400).json({ message: "Brak wymaganych danych!" });
     }
 
     try {
         const db = await connectDB();
-        await db.run("INSERT INTO Books (Title, Author, Image) VALUES (?, ?, ?)", [Title, Author, Image]);
-        res.json({ message: "Książka dodana pomyślnie!" });
+        await db.run(
+            "INSERT INTO Books (Title, Author, Image, MaxDays, Genre) VALUES (?, ?, ?, ?, ?)",
+            [Title, Author, Image, MaxDays, Genre]
+        );
+
+        res.json({ message: "Książka została dodana!" });
     } catch (error) {
         console.error("Błąd przy dodawaniu książki:", error);
-        res.status(500).json({ message: "Błąd serwera" });
+        res.status(500).json({ message: "Błąd serwera." });
     }
 });
 
@@ -43,6 +47,60 @@ router.get("/getBooks", async (req, res) => {
     } catch (error) {
         console.error("Błąd przy pobieraniu książek:", error);
         res.status(500).json({ message: "Błąd serwera" });
+    }
+});
+
+
+// Obsługa usuwania książek
+router.delete("/deleteBooks/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const db = await connectDB();
+        await db.run("DELETE FROM Books WHERE Id = ?", [id]);
+
+        res.json({ message: "Książka została usunięta." });
+    } catch (error) {
+        console.error("Błąd przy usuwaniu książki:", error);
+        res.status(500).json({ message: "Błąd serwera." });
+    }
+});
+
+// Obsługa edycji książek
+router.put("/editBooks/:id", upload.single("Image"), async (req, res) => {
+    const { id } = req.params;
+    const { Title, Author, Genre, MaxDays } = req.body;
+    const Image = req.file ? req.file.filename : null;
+
+    if (!Title || !Author || !Genre || !MaxDays) {
+        return res.status(400).json({ message: "Brak wymaganych danych!" });
+    }
+
+    try {
+        const db = await connectDB();
+
+        const bookExists = await db.get("SELECT * FROM Books WHERE Id = ?", [id]);
+        if (!bookExists) {
+            return res.status(404).json({ message: "Książka nie istnieje." });
+        }
+
+        let sql = "UPDATE Books SET Title = ?, Author = ?, Genre = ?, MaxDays = ?";
+        let params = [Title, Author, Genre, MaxDays];
+
+        if (Image) {
+            sql += ", Image = ?";
+            params.push(Image);
+        }
+
+        sql += " WHERE Id = ?";
+        params.push(id);
+
+        await db.run(sql, params);
+
+        res.json({ message: "Książka została zaktualizowana." });
+    } catch (error) {
+        console.error("Błąd przy aktualizacji książki:", error);
+        res.status(500).json({ message: "Błąd serwera." });
     }
 });
 
