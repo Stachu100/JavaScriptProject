@@ -24,6 +24,17 @@ input[type="file"] {
     border-radius: 5px;
 }
 
+select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
 button {
     background-color: #4CAF50;
     color: white;
