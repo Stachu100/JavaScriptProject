@@ -7,13 +7,6 @@ router.use(express.json());
 router.post("/borrow", async (req, res) => {
     const { userId, bookId, borrowedDate, returnDate } = req.body;
 
-    console.log("Dane przychodzące na serwerze:", {
-        userId,
-        bookId,
-        borrowedDate,
-        returnDate
-    });
-
     if (!userId || !bookId || !borrowedDate || !returnDate) {
         return res.status(400).json({ message: "Brak wymaganych danych." });
     }

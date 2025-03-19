@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             borrowBtn.addEventListener("click", async function () {
                 const borrowDate = new Date().toISOString();
                 const returnDate = new Date();
-                returnDate.setDate(returnDate.getDate() + 14);
+                returnDate.setDate(returnDate.getDate() + book.MaxDays);
                 const returnDateStr = returnDate.toISOString();
 
                 try {
