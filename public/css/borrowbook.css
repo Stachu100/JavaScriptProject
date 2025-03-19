@@ -55,7 +55,23 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    margin-top: 10px;
+    margin-top: 15px;
+}
+
+.edit-btn, .delete-btn {
+    width: 60px;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin: 5px 5px 15px 5px;
+}
+
+.edit-btn {
+    background-color: yellow;
+}
+
+.delete-btn {
+    background-color: red;
 }
 
 .borrow-btn:hover {
