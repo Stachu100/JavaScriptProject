@@ -28,8 +28,8 @@ router.post("/addBook", upload.single("Image"), async (req, res) => {
     try {
         const db = await connectDB();
         await db.run(
-            "INSERT INTO Books (Title, Author, Image, MaxDays, Genre) VALUES (?, ?, ?, ?, ?)",
-            [Title, Author, Image, MaxDays, Genre]
+            "INSERT INTO Books (Title, Author, Image, MaxDays, Genre, IsBorrowed) VALUES (?, ?, ?, ?, ?, ?)",
+            [Title, Author, Image, MaxDays, Genre, 0]
         );
 
         res.json({ message: "Książka została dodana!" });
