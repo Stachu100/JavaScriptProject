@@ -75,4 +75,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         localStorage.removeItem("user");
         window.location.href = "/Index.html";
     });
+
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            location.reload();
+        }
+    });
 });

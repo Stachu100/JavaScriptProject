@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                         if (response.ok) {
                             alert(`Książka '${book.Title}' została wypożyczona!`);
+                            location.reload();
                         } else {
                             alert(`Błąd: ${data.message}`);
                         }

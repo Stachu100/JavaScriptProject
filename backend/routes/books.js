@@ -43,7 +43,7 @@ router.post("/addBook", upload.single("Image"), async (req, res) => {
 router.get("/getBooks", async (req, res) => {
     try {
         const db = await connectDB();
-        const books = await db.all("SELECT * FROM Books");
+        const books = await db.all("SELECT * FROM Books WHERE IsBorrowed = 0");
         res.json(books);
     } catch (error) {
         console.error("Błąd przy pobieraniu książek:", error);

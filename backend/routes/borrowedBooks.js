@@ -18,6 +18,8 @@ router.post("/borrow", async (req, res) => {
             [userId, bookId, borrowedDate, returnDate]
         );
 
+        await db.run("UPDATE Books SET IsBorrowed = 1 WHERE Id = ?", [bookId]);
+
         res.json({ message: "Książka została wypożyczona." });
     } catch (error) {
         console.error("Błąd przy wypożyczaniu książki:", error);
