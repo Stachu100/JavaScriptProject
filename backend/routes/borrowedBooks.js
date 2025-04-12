@@ -47,12 +47,12 @@ router.get("/getUserBorrowedBooks/:userId", async (req, res) => {
     }
 });
 
-router.get("/getUserBorrowHistory/:userName", async (req, res) => {
+router.get("/getUserBorrowedUserBooks/:userName", async (req, res) => {
     const { userName } = req.params;
 
     try {
         const db = await connectDB();
-        const historyBooks = await db.all(`
+        const borrowedUserBooks = await db.all(`
     SELECT Books.*, BorrowedBooks.ReturnDate 
     FROM BorrowedBooks
     JOIN Books ON BorrowedBooks.BookId = Books.Id
@@ -60,9 +60,9 @@ router.get("/getUserBorrowHistory/:userName", async (req, res) => {
     WHERE Users.UserName = ?`, [userName]
         );
 
-        res.json(historyBooks);
+        res.json(borrowedUserBooks);
     } catch (error) {
-        console.error("Błąd przy pobieraniu historii wypożyczeń:", error);
+        console.error("Błąd przy pobieraniu wypożyczeń użytkownika:", error);
         res.status(500).json({ message: "Błąd serwera" });
     }
 });

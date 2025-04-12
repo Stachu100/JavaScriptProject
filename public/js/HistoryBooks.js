@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if (user && user.username) {
         try {
-            const response = await fetch(`/borrowedBooks/getUserBorrowHistory/${user.id}`);
+            const response = await fetch(`/historyBooks/getUserHistoryBooks/${user.id}`);
             const historyBooks = await response.json();
 
             if (historyBooks.length > 0) {

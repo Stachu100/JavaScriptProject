@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const bookRoutes = require("./routes/books");
-const UserRoutes = require("./routes/Users");
+const UserRoutes = require("./routes/users");
 const borrowedBooksRoutes = require("./routes/borrowedBooks");
 
 const app = express();

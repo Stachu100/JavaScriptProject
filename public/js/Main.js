@@ -5,9 +5,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     const logoutLink = document.getElementById("logout-link");
     const borrowedBooksContainer = document.querySelector(".borrowed-books-container");
     const adminSection = document.getElementById("admin-section");
-    const fetchHistoryBtn = document.getElementById("fetchHistoryBtn");
+    const fetchCurrentBtn = document.getElementById("fetchCurrentBtn");
     const userIdInput = document.getElementById("userIdInput");
-    const userBorrowHistory = document.querySelector(".user-borrow-history");
+    const userBorrowBooks = document.querySelector(".user-borrow");
 
     if (user && user.username) {
         userInfoElement.textContent = `Zalogowany użytkownik: ${user.username}`;
@@ -81,17 +81,17 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    async function fetchUserBorrowHistory(userName) {
-        userBorrowHistory.innerHTML = "<p>Ładowanie danych...</p>";
+    async function fetchUserBorrow(userName) {
+        userBorrowBooks.innerHTML = "<p>Ładowanie danych...</p>";
 
         try {
-            const response = await fetch(`/borrowedBooks/getUserBorrowHistory/${userName}`);
-            const history = await response.json();
+            const response = await fetch(`/borrowedBooks/getUserBorrowedUserBooks/${userName}`);
+            const currentBorrowed = await response.json();
 
-            userBorrowHistory.innerHTML = "";
+            userBorrowBooks.innerHTML = "";
 
-            if (history.length > 0) {
-                history.forEach(book => {
+            if (currentBorrowed.length > 0) {
+                currentBorrowed.forEach(book => {
                     const bookCard = document.createElement("div");
                     bookCard.classList.add("book-card");
 
@@ -121,24 +121,24 @@ document.addEventListener("DOMContentLoaded", async function () {
                     bookDetails.appendChild(borrowInfo);
                     bookCard.appendChild(bookImage);
                     bookCard.appendChild(bookDetails);
-                    userBorrowHistory.appendChild(bookCard);
+                    userBorrowBooks.appendChild(bookCard);
                 });
             } else {
-                userBorrowHistory.innerHTML = "<p>Brak historii wypożyczeń.</p>";
+                userBorrowBooks.innerHTML = "<p>Brak aktualnie wypożyczonych.</p>";
             }
         } catch (error) {
-            console.error("Błąd przy pobieraniu historii wypożyczeń:", error);
-            userBorrowHistory.innerHTML = "<p>Błąd podczas pobierania danych.</p>";
+            console.error("Błąd przy pobieraniu książek:", error);
+            userBorrowBooks.innerHTML = "<p>Błąd podczas pobierania danych.</p>";
         }
     }
 
-    fetchHistoryBtn.addEventListener("click", function () {
+    fetchCurrentBtn.addEventListener("click", function () {
         const userName = userIdInput.value.trim();
         if (!userName) {
             alert("Podaj ID użytkownika!");
             return;
         }
-        fetchUserBorrowHistory(userName);
+        fetchUserBorrow(userName);
     });
 
     logoutLink.addEventListener("click", function (event) {
