@@ -19,6 +19,7 @@ router.post("/borrow", async (req, res) => {
         );
 
         await db.run("UPDATE Books SET IsBorrowed = 1 WHERE Id = ?", [bookId]);
+        await db.run("INSERT INTO HistoryBorrowedBooks (UserId, BookId, BorrowedDate, ReturnedDate, IsReturned) VALUES (?, ?, ?, NULL, FALSE)", [userId,bookId,borrowedDate]);
 
         res.json({ message: "Książka została wypożyczona." });
     } catch (error) {
@@ -45,5 +46,26 @@ router.get("/getUserBorrowedBooks/:userId", async (req, res) => {
         res.status(500).json({ message: "Błąd serwera" });
     }
 });
+
+router.get("/getUserBorrowHistory/:userName", async (req, res) => {
+    const { userName } = req.params;
+
+    try {
+        const db = await connectDB();
+        const historyBooks = await db.all(`
+    SELECT Books.*, BorrowedBooks.ReturnDate 
+    FROM BorrowedBooks
+    JOIN Books ON BorrowedBooks.BookId = Books.Id
+    JOIN Users ON BorrowedBooks.UserId = Users.Id
+    WHERE Users.UserName = ?`, [userName]
+        );
+
+        res.json(historyBooks);
+    } catch (error) {
+        console.error("Błąd przy pobieraniu historii wypożyczeń:", error);
+        res.status(500).json({ message: "Błąd serwera" });
+    }
+});
+
 
 module.exports = router;

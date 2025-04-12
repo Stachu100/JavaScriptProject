@@ -4,19 +4,31 @@ document.addEventListener("DOMContentLoaded", async function () {
     const addBookLink = document.getElementById("add-book-link");
     const logoutLink = document.getElementById("logout-link");
     const borrowedBooksContainer = document.querySelector(".borrowed-books-container");
+    const adminSection = document.getElementById("admin-section");
+    const fetchHistoryBtn = document.getElementById("fetchHistoryBtn");
+    const userIdInput = document.getElementById("userIdInput");
+    const userBorrowHistory = document.querySelector(".user-borrow-history");
 
     if (user && user.username) {
         userInfoElement.textContent = `Zalogowany użytkownik: ${user.username}`;
 
         if (user.isAdmin) {
             addBookLink.style.display = "inline";
+            adminSection.style.display = "block"; 
         } else {
             addBookLink.style.display = "none";
+            adminSection.style.display = "none";
         }
 
+        fetchBorrowedBooks(user.id); 
+    }
+
+    async function fetchBorrowedBooks(userId) {
         try {
-            const response = await fetch(`/borrowedBooks/getUserBorrowedBooks/${user.id}`);
+            const response = await fetch(`/borrowedBooks/getUserBorrowedBooks/${userId}`);
             const borrowedBooks = await response.json();
+
+            borrowedBooksContainer.innerHTML = "";
 
             if (borrowedBooks.length > 0) {
                 borrowedBooks.forEach(book => {
@@ -61,14 +73,73 @@ document.addEventListener("DOMContentLoaded", async function () {
                     borrowedBooksContainer.appendChild(bookCard);
                 });
             } else {
-                const noBooksMessage = document.createElement("p");
-                noBooksMessage.textContent = "Brak wypożyczonych książek.";
-                borrowedBooksContainer.appendChild(noBooksMessage);
+                borrowedBooksContainer.innerHTML = "<p>Brak wypożyczonych książek.</p>";
             }
         } catch (error) {
             console.error("Błąd przy pobieraniu wypożyczonych książek:", error);
+            borrowedBooksContainer.innerHTML = "<p>Błąd podczas pobierania danych.</p>";
         }
     }
+
+    async function fetchUserBorrowHistory(userName) {
+        userBorrowHistory.innerHTML = "<p>Ładowanie danych...</p>";
+
+        try {
+            const response = await fetch(`/borrowedBooks/getUserBorrowHistory/${userName}`);
+            const history = await response.json();
+
+            userBorrowHistory.innerHTML = "";
+
+            if (history.length > 0) {
+                history.forEach(book => {
+                    const bookCard = document.createElement("div");
+                    bookCard.classList.add("book-card");
+
+                    const bookImage = document.createElement("img");
+                    bookImage.src = book.Image ? book.Image : "brak_okladki.png";
+                    bookImage.alt = book.Title;
+                    bookImage.classList.add("book-image");
+
+                    const bookDetails = document.createElement("div");
+                    bookDetails.classList.add("book-details");
+
+                    const bookTitle = document.createElement("p");
+                    bookTitle.classList.add("book-title");
+                    bookTitle.textContent = book.Title;
+
+                    const bookAuthor = document.createElement("p");
+                    bookAuthor.classList.add("book-author");
+                    bookAuthor.textContent = book.Author;
+
+
+
+                    const borrowInfo = document.createElement("p");
+
+
+                    bookDetails.appendChild(bookTitle);
+                    bookDetails.appendChild(bookAuthor);
+                    bookDetails.appendChild(borrowInfo);
+                    bookCard.appendChild(bookImage);
+                    bookCard.appendChild(bookDetails);
+                    userBorrowHistory.appendChild(bookCard);
+                });
+            } else {
+                userBorrowHistory.innerHTML = "<p>Brak historii wypożyczeń.</p>";
+            }
+        } catch (error) {
+            console.error("Błąd przy pobieraniu historii wypożyczeń:", error);
+            userBorrowHistory.innerHTML = "<p>Błąd podczas pobierania danych.</p>";
+        }
+    }
+
+    fetchHistoryBtn.addEventListener("click", function () {
+        const userName = userIdInput.value.trim();
+        if (!userName) {
+            alert("Podaj ID użytkownika!");
+            return;
+        }
+        fetchUserBorrowHistory(userName);
+    });
 
     logoutLink.addEventListener("click", function (event) {
         event.preventDefault();
