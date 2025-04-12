@@ -9,14 +9,39 @@ router.get("/getUserHistoryBooks/:userId", async (req, res) => {
 
     try {
         const db = await connectDB();
-        const borrowedBooks = await db.all(`
-            SELECT Books.*, BorrowedBooks.ReturnDate 
-            FROM BorrowedBooks
-            JOIN Books ON BorrowedBooks.BookId = Books.Id
-            WHERE BorrowedBooks.UserId = ?`, [userId]
+        const history = await db.all(`
+            SELECT Books.*, 
+                   HistoryBorrowedBooks.BorrowedDate, 
+                   HistoryBorrowedBooks.ReturnedDate,
+                   HistoryBorrowedBooks.IsReturned
+            FROM HistoryBorrowedBooks
+            JOIN Books ON HistoryBorrowedBooks.BookId = Books.Id
+            WHERE HistoryBorrowedBooks.UserId = ?`, 
+            [userId]
         );
 
-        res.json(borrowedBooks);
+        res.json(history);
+    } catch (error) {
+        console.error("Błąd przy pobieraniu historii książek:", error);
+        res.status(500).json({ message: "Błąd serwera" });
+    }
+});
+
+router.get("/getAllHistoryBooks", async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const db = await connectDB();
+        const history = await db.all(`
+            SELECT Books.*, 
+                   HistoryBorrowedBooks.BorrowedDate, 
+                   HistoryBorrowedBooks.ReturnedDate,
+                   HistoryBorrowedBooks.IsReturned
+            FROM HistoryBorrowedBooks
+            JOIN Books ON HistoryBorrowedBooks.BookId = Books.Id`, 
+        );
+
+        res.json(history);
     } catch (error) {
         console.error("Błąd przy pobieraniu historii książek:", error);
         res.status(500).json({ message: "Błąd serwera" });

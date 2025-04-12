@@ -1,9 +1,16 @@
 document.addEventListener("DOMContentLoaded", async function () {
     const historyContainer = document.querySelector(".history-container");
+    const user = JSON.parse(localStorage.getItem("user"));
 
     if (user && user.username) {
         try {
-            const response = await fetch(`/historyBooks/getUserHistoryBooks/${user.id}`);
+            
+            if (user.isAdmin) {
+                response = await fetch("/historyBooks/getAllHistoryBooks");
+            } else {
+                response = await fetch(`/historyBooks/getUserHistoryBooks/${user.id}`);
+            }
+
             const historyBooks = await response.json();
 
             if (historyBooks.length > 0) {
