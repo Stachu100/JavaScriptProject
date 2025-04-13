@@ -2,7 +2,6 @@ const path = require("path");
 const sqlite3 = require("sqlite3");
 const sqlite = require("sqlite");
 
-// Funkcja do połączenia z bazą danych
 async function connectDB() {
     try {
         const db = await sqlite.open({

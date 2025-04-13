@@ -76,49 +76,75 @@ document.addEventListener("DOMContentLoaded", async function () {
                 borrowedBooksContainer.innerHTML = "<p>Brak wypożyczonych książek.</p>";
             }
         } catch (error) {
-            console.error("Błąd przy pobieraniu wypożyczonych książek:", error);
             borrowedBooksContainer.innerHTML = "<p>Błąd podczas pobierania danych.</p>";
         }
     }
 
     async function fetchUserBorrow(userName) {
         userBorrowBooks.innerHTML = "<p>Ładowanie danych...</p>";
-
+    
         try {
             const response = await fetch(`/borrowedBooks/getUserBorrowedUserBooks/${userName}`);
             const currentBorrowed = await response.json();
-
+    
             userBorrowBooks.innerHTML = "";
-
+    
             if (currentBorrowed.length > 0) {
                 currentBorrowed.forEach(book => {
                     const bookCard = document.createElement("div");
                     bookCard.classList.add("book-card");
-
+    
                     const bookImage = document.createElement("img");
                     bookImage.src = book.Image ? book.Image : "brak_okladki.png";
                     bookImage.alt = book.Title;
                     bookImage.classList.add("book-image");
-
+    
                     const bookDetails = document.createElement("div");
                     bookDetails.classList.add("book-details");
-
+    
                     const bookTitle = document.createElement("p");
                     bookTitle.classList.add("book-title");
                     bookTitle.textContent = book.Title;
-
+    
                     const bookAuthor = document.createElement("p");
                     bookAuthor.classList.add("book-author");
                     bookAuthor.textContent = book.Author;
-
-
-
-                    const borrowInfo = document.createElement("p");
-
-
+    
+                    const returnBtn = document.createElement("button");
+                    returnBtn.classList.add("return-btn");
+                    returnBtn.textContent = "Oddaj książkę";
+    
+                    returnBtn.addEventListener("click", async function () {
+                        if (confirm(`Czy na pewno chcesz oddać książkę: ${book.Title}?`)) {
+                            try {
+                                const response = await fetch("/borrowedBooks/return", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({
+                                        userId: user.id,
+                                        bookId: book.Id
+                                    })
+                                });
+    
+                                const data = await response.json();
+    
+                                if (response.ok) {
+                                    alert(`Książka '${book.Title}' została oddana!`);
+                                    fetchUserBorrow(userName);
+                                } else {
+                                    alert(`Błąd: ${data.message}`);
+                                }
+                            } catch (error) {
+                                alert("Wystąpił błąd podczas oddawania książki.");
+                            }
+                        }
+                    });
+    
                     bookDetails.appendChild(bookTitle);
                     bookDetails.appendChild(bookAuthor);
-                    bookDetails.appendChild(borrowInfo);
+                    bookDetails.appendChild(returnBtn);
                     bookCard.appendChild(bookImage);
                     bookCard.appendChild(bookDetails);
                     userBorrowBooks.appendChild(bookCard);
@@ -127,10 +153,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                 userBorrowBooks.innerHTML = "<p>Brak aktualnie wypożyczonych.</p>";
             }
         } catch (error) {
-            console.error("Błąd przy pobieraniu książek:", error);
             userBorrowBooks.innerHTML = "<p>Błąd podczas pobierania danych.</p>";
         }
     }
+    
 
     fetchCurrentBtn.addEventListener("click", function () {
         const userName = userIdInput.value.trim();

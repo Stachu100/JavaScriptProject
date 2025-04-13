@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if (user && user.username) {
         try {
-            
+            let response;
             if (user.isAdmin) {
                 response = await fetch("/historyBooks/getAllHistoryBooks");
             } else {
@@ -18,21 +18,14 @@ document.addEventListener("DOMContentLoaded", async function () {
                     const bookCard = document.createElement("div");
                     bookCard.classList.add("book-card");
 
-                    const bookImage = document.createElement("img");
-                    bookImage.src = book.Image ? book.Image : "brak_okladki.png";
-                    bookImage.alt = book.Title;
-                    bookImage.classList.add("book-image");
-
                     const bookDetails = document.createElement("div");
                     bookDetails.classList.add("book-details");
 
                     const bookTitle = document.createElement("p");
-                    bookTitle.classList.add("book-title");
-                    bookTitle.textContent = book.Title;
+                    bookTitle.textContent = `Tytuł: ${book.Title}`;
 
                     const bookAuthor = document.createElement("p");
-                    bookAuthor.classList.add("book-author");
-                    bookAuthor.textContent = book.Author;
+                    bookAuthor.textContent = `Autor: ${book.Author}`;
 
                     const borrowedDate = new Date(book.BorrowedDate);
                     const returnedDate = book.ReturnedDate ? new Date(book.ReturnedDate) : null;
@@ -49,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     bookDetails.appendChild(bookAuthor);
                     bookDetails.appendChild(borrowedDateElement);
                     bookDetails.appendChild(returnedDateElement);
-                    bookCard.appendChild(bookImage);
+
                     bookCard.appendChild(bookDetails);
                     historyContainer.appendChild(bookCard);
                 });

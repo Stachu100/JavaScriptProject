@@ -5,7 +5,7 @@ const path = require("path");
 const fs = require('fs');
 const router = express.Router();
 
-// Konfiguracja multer
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "public/bookcover/");
@@ -16,7 +16,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Obsługa dodawania książek
 router.post("/addBook", upload.single("Image"), async (req, res) => {
     const { Title, Author, Genre, MaxDays } = req.body;
     const Image = req.file ? req.file.filename : null;
@@ -34,25 +33,20 @@ router.post("/addBook", upload.single("Image"), async (req, res) => {
 
         res.json({ message: "Książka została dodana!" });
     } catch (error) {
-        console.error("Błąd przy dodawaniu książki:", error);
         res.status(500).json({ message: "Błąd serwera." });
     }
 });
 
-// Obsługa pobierania książek
 router.get("/getBooks", async (req, res) => {
     try {
         const db = await connectDB();
         const books = await db.all("SELECT * FROM Books WHERE IsBorrowed = 0");
         res.json(books);
     } catch (error) {
-        console.error("Błąd przy pobieraniu książek:", error);
         res.status(500).json({ message: "Błąd serwera" });
     }
 });
 
-
-// Obsługa usuwania książek
 router.delete("/deleteBooks/:id", async (req, res) => {
     const { id } = req.params;
 
@@ -62,12 +56,10 @@ router.delete("/deleteBooks/:id", async (req, res) => {
 
         res.json({ message: "Książka została usunięta." });
     } catch (error) {
-        console.error("Błąd przy usuwaniu książki:", error);
         res.status(500).json({ message: "Błąd serwera." });
     }
 });
 
-// Obsługa edycji książek
 router.put("/editBooks/:id", upload.single("Image"), async (req, res) => {
     const { id } = req.params;
     const { Title, Author, Genre, MaxDays } = req.body;
@@ -107,7 +99,6 @@ router.put("/editBooks/:id", upload.single("Image"), async (req, res) => {
 
         res.json({ message: "Książka została zaktualizowana." });
     } catch (error) {
-        console.error("Błąd przy aktualizacji książki:", error);
         res.status(500).json({ message: "Błąd serwera." });
     }
 });

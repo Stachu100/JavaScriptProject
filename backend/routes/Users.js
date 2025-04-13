@@ -22,7 +22,6 @@ router.post("/addUser", async (req, res) => {
 
         res.json({ message: "Użytkownik dodany pomyślnie!" });
     } catch (error) {
-        console.error("Błąd przy dodawaniu użytkownika:", error);
         res.status(500).json({ message: "Błąd serwera" });
     }
 });
@@ -48,7 +47,6 @@ router.post("/login", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Błąd logowania:", error);
         res.status(500).json({ message: "Błąd serwera" });
     }
 });

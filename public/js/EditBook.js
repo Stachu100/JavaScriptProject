@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert(`Błąd: ${result.message}`);
             }
         } catch (error) {
-            console.error("Błąd przy edytowaniu książki:", error);
             alert("Wystąpił błąd podczas edytowania książki.");
         }
     });

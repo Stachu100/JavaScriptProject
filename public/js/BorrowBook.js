@@ -62,7 +62,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                             alert(`Błąd: ${data.message}`);
                         }
                     } catch (error) {
-                        console.error("Błąd przy wypożyczaniu książki:", error);
                         alert("Wystąpił błąd podczas wypożyczania książki.");
                     }
                 });
@@ -87,7 +86,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                                     alert(`Błąd: ${data.message}`);
                                 }
                             } catch (error) {
-                                console.error("Błąd przy usuwaniu książki:", error);
                                 alert("Wystąpił błąd podczas usuwania książki.");
                             }
                         }

@@ -22,7 +22,6 @@ router.get("/getUserHistoryBooks/:userId", async (req, res) => {
 
         res.json(history);
     } catch (error) {
-        console.error("Błąd przy pobieraniu historii książek:", error);
         res.status(500).json({ message: "Błąd serwera" });
     }
 });
@@ -43,7 +42,6 @@ router.get("/getAllHistoryBooks", async (req, res) => {
 
         res.json(history);
     } catch (error) {
-        console.error("Błąd przy pobieraniu historii książek:", error);
         res.status(500).json({ message: "Błąd serwera" });
     }
 });

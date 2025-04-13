@@ -23,7 +23,6 @@ router.post("/borrow", async (req, res) => {
 
         res.json({ message: "Książka została wypożyczona." });
     } catch (error) {
-        console.error("Błąd przy wypożyczaniu książki:", error);
         res.status(500).json({ message: "Błąd serwera." });
     }
 });
@@ -42,7 +41,6 @@ router.get("/getUserBorrowedBooks/:userId", async (req, res) => {
 
         res.json(borrowedBooks);
     } catch (error) {
-        console.error("Błąd przy pobieraniu wypożyczonych książek:", error);
         res.status(500).json({ message: "Błąd serwera" });
     }
 });
@@ -53,19 +51,55 @@ router.get("/getUserBorrowedUserBooks/:userName", async (req, res) => {
     try {
         const db = await connectDB();
         const borrowedUserBooks = await db.all(`
-    SELECT Books.*, BorrowedBooks.ReturnDate 
-    FROM BorrowedBooks
-    JOIN Books ON BorrowedBooks.BookId = Books.Id
-    JOIN Users ON BorrowedBooks.UserId = Users.Id
-    WHERE Users.UserName = ?`, [userName]
+            SELECT Books.*, BorrowedBooks.ReturnDate 
+            FROM BorrowedBooks
+            JOIN Books ON BorrowedBooks.BookId = Books.Id
+            JOIN Users ON BorrowedBooks.UserId = Users.Id
+            WHERE Users.UserName = ?`, [userName]
         );
 
         res.json(borrowedUserBooks);
     } catch (error) {
-        console.error("Błąd przy pobieraniu wypożyczeń użytkownika:", error);
         res.status(500).json({ message: "Błąd serwera" });
     }
 });
 
+router.post("/return", async (req, res) => {
+
+    const { userId, bookId } = req.body;
+
+    if (!userId || !bookId) {
+        return res.status(400).json({ message: "Brak wymaganych danych." });
+    }
+
+    try {
+        const db = await connectDB();
+        const returnedDate = new Date().toISOString();
+
+        await db.run(
+            `UPDATE HistoryBorrowedBooks
+             SET ReturnedDate = ?, IsReturned = 1
+             WHERE UserId = ? AND BookId = ? AND IsReturned = 0`,
+            [returnedDate, userId, bookId]
+        );
+
+        await db.run(
+            `UPDATE Books
+             SET IsBorrowed = 0
+             WHERE Id = ?`,
+            [bookId]
+        );
+
+        await db.run(
+            `DELETE FROM BorrowedBooks
+             WHERE UserId = ? AND BookId = ?`,
+            [userId, bookId]
+        );
+
+        res.json({ message: "Książka została oddana." });
+    } catch (error) {
+        res.status(500).json({ message: "Błąd serwera przy oddawaniu książki." });
+    }
+});
 
 module.exports = router;
