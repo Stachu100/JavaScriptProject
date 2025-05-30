@@ -30,6 +30,12 @@ document.addEventListener("DOMContentLoaded", async function () {
                     const borrowedDate = new Date(book.BorrowedDate);
                     const returnedDate = book.ReturnedDate ? new Date(book.ReturnedDate) : null;
 
+                    if (user.isAdmin && book.UserName) {
+                    const userNameElement = document.createElement("p");
+                    userNameElement.textContent = `Użytkownik: ${book.UserName}`;
+                    bookDetails.appendChild(userNameElement);
+                    }
+                    
                     const borrowedDateElement = document.createElement("p");
                     borrowedDateElement.textContent = `Data wypożyczenia: ${borrowedDate.toLocaleDateString()}`;
 

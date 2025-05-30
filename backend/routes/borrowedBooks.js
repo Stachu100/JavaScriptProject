@@ -51,7 +51,7 @@ router.get("/getUserBorrowedUserBooks/:userName", async (req, res) => {
     try {
         const db = await connectDB();
         const borrowedUserBooks = await db.all(`
-            SELECT Books.*, BorrowedBooks.ReturnDate 
+            SELECT Books.*, BorrowedBooks.UserId, BorrowedBooks.ReturnDate 
             FROM BorrowedBooks
             JOIN Books ON BorrowedBooks.BookId = Books.Id
             JOIN Users ON BorrowedBooks.UserId = Users.Id

@@ -27,17 +27,17 @@ router.get("/getUserHistoryBooks/:userId", async (req, res) => {
 });
 
 router.get("/getAllHistoryBooks", async (req, res) => {
-    const { userId } = req.params;
-
     try {
         const db = await connectDB();
         const history = await db.all(`
             SELECT Books.*, 
                    HistoryBorrowedBooks.BorrowedDate, 
                    HistoryBorrowedBooks.ReturnedDate,
-                   HistoryBorrowedBooks.IsReturned
+                   HistoryBorrowedBooks.IsReturned,
+                   Users.UserName
             FROM HistoryBorrowedBooks
-            JOIN Books ON HistoryBorrowedBooks.BookId = Books.Id`, 
+            JOIN Books ON HistoryBorrowedBooks.BookId = Books.Id
+            JOIN Users ON HistoryBorrowedBooks.UserId = Users.Id`, 
         );
 
         res.json(history);

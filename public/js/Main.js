@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                                         "Content-Type": "application/json"
                                     },
                                     body: JSON.stringify({
-                                        userId: user.id,
+                                        userId: book.UserId,
                                         bookId: book.Id
                                     })
                                 });
@@ -133,6 +133,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                                 if (response.ok) {
                                     alert(`Książka '${book.Title}' została oddana!`);
                                     fetchUserBorrow(userName);
+                                    if (user.isAdmin) {
+                                        fetchBorrowedBooks(user.id);
+                                    }                               
                                 } else {
                                     alert(`Błąd: ${data.message}`);
                                 }

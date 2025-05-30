@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (response.ok) {
                 alert("Książka została zaktualizowana!");
-                window.location.href = "/BorrowBook.html";
+                window.location.replace("/BorrowBook.html");
             } else {
                 alert(`Błąd: ${result.message}`);
             }
