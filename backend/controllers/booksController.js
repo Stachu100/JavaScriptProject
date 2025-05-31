@@ -1,12 +1,9 @@
 const path = require("path");
-const fs   = require("fs");
-const { addBook, getAllAvailable, deleteBook, getById, updateBook } = require("../models/booksModel");
+const fs = require("fs").promises;
+const multer  = require("multer");
+const { addBook, getAllAvailable, deleteBook, getById, editBook } = require("../models/booksModel");
 
-const multer = require("multer");
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "public/bookcover/"),
-    filename:    (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
-});
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 const addBookCtrl = [
@@ -14,16 +11,39 @@ const addBookCtrl = [
     async (req, res, next) => {
         try {
             const { Title, Author, Genre, MaxDays } = req.body;
-            if (!Title || !Author || !Genre || !MaxDays) {
-                return res.status(400).json({ message: "Brak wymaganych danych!" });
+            
+            if (!Author || !/^[\p{L}\s.'-]{2,100}$/u.test(Author)) {
+              return res.status(400).json({ message: "Niepoprawny autor (2-100 znaków, litery i '.-)" });
             }
+            if (!Title || Title.length < 2 || Title.length > 100) {
+              return res.status(400).json({ message: "Tytuł musi mieć 2-100 znaków" });
+            }
+            const genres = ["Fantastyka", "Science Fiction", "Kryminał", "Horror", "Romans", "Przygodowa", "Biografia", "Podrecznik", "Inne"];
+            if (!Genre || !genres.includes(Genre)) {
+              return res.status(400).json({ message: "Nieprawidłowy gatunek" });
+            }
+            if (!MaxDays || isNaN(MaxDays) || Number(MaxDays) <= 0) {
+              return res.status(400).json({ message: "Maksymalna liczba dni musi być liczbą większą od 0" });
+            }
+            
+            let imageFileName = null;
+
+            if (req.file) {
+                imageFileName = Date.now() + path.extname(req.file.originalname);
+            }
+
             await addBook({
                 Title,
                 Author,
                 Genre,
                 MaxDays,
-                Image: req.file ? req.file.filename : null,
+                Image: imageFileName,
             });
+
+            if (req.file) {
+                const fullPath = path.join(__dirname, "..", "..", "public", "bookcover", imageFileName);
+                await fs.writeFile(fullPath, req.file.buffer);
+            }
             res.json({ message: "Książka została dodana!" });
         } catch (err) { next(err); }
     },
@@ -38,38 +58,75 @@ const getBooksCtrl = async (req, res, next) => {
 
 const deleteBookCtrl = async (req, res, next) => {
     try {
+        const book = await getById(req.params.id);
+        if (!book) return res.status(404).json({ message: "Książka nie istnieje." });
+
+        if (book.Image) {
+            const imagePath = path.join(__dirname, "..", "..", "public", "bookcover", book.Image);
+            try {
+                await fs.access(imagePath);
+                await fs.unlink(imagePath);
+            } catch {}
+        }
+
         await deleteBook(req.params.id);
         res.json({ message: "Książka została usunięta." });
     } catch (err) { next(err); }
 };
 
 const editBookCtrl = [
-    upload.single("Image"),
-    async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const { Title, Author, Genre, MaxDays } = req.body;
-            if (!Title || !Author || !Genre || !MaxDays) {
-                return res.status(400).json({ message: "Brak wymaganych danych!" });
-            }
+  upload.single("Image"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { Title, Author, Genre, MaxDays } = req.body;
 
-            const existing = await getById(id);
-            if (!existing) return res.status(404).json({ message: "Książka nie istnieje." });
+      if (!Author || !/^[\p{L}\s.'-]{2,100}$/u.test(Author)) {
+        return res.status(400).json({ message: "Niepoprawny autor (2-100 znaków, litery i '.-)" });
+      }
+      if (!Title || Title.length < 2 || Title.length > 100) {
+        return res.status(400).json({ message: "Tytuł musi mieć 2-100 znaków" });
+      }
+      const genres = ["Fantastyka", "Science Fiction", "Kryminał", "Horror", "Romans", "Przygodowa", "Biografia", "Podrecznik", "Inne"];
+      if (!Genre || !genres.includes(Genre)) {
+        return res.status(400).json({ message: "Nieprawidłowy gatunek" });
+      }
+      if (!MaxDays || isNaN(MaxDays) || Number(MaxDays) <= 0) {
+        return res.status(400).json({ message: "Maksymalna liczba dni musi być liczbą większą od 0" });
+      }
 
-            if (req.file && existing.Image) {
-                const oldPath = path.join(__dirname, "..", "..", "public", "bookcover", existing.Image);
-                if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-            }
+      const existing = await getById(id);
+      if (!existing) {
+        return res.status(404).json({ message: "Książka nie istnieje." });
+      }
 
-            let sql = "UPDATE Books SET Title = ?, Author = ?, Genre = ?, MaxDays = ?";
-            let params = [Title, Author, Genre, MaxDays];
-            if (req.file) { sql += ", Image = ?"; params.push(req.file.filename); }
-            sql += " WHERE Id = ?"; params.push(id);
+      let imageFileName = existing.Image;
 
-            await updateBook(sql, params);
-            res.json({ message: "Książka została zaktualizowana." });
-        } catch (err) { next(err); }
-    },
+      if (req.file) {
+        if (existing.Image) {
+          const imagePath = path.join(__dirname, "..", "..", "public", "bookcover", existing.Image);
+          try {
+            await fs.access(imagePath);
+            await fs.unlink(imagePath);
+          } catch { }
+        }
+
+        imageFileName = Date.now() + path.extname(req.file.originalname);
+        const newPath = path.join(__dirname, "..", "..", "public", "bookcover", imageFileName);
+        await fs.writeFile(newPath, req.file.buffer);
+      }
+
+      await editBook(id, {
+        Title,
+        Author,
+        Genre,
+        MaxDays,
+        Image: imageFileName,
+      });
+
+      res.json({ message: "Książka została zaktualizowana." });
+    } catch (err) { next(err); }
+  }
 ];
 
 module.exports = { addBookCtrl, getBooksCtrl, deleteBookCtrl, editBookCtrl };

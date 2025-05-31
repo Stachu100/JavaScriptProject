@@ -1,9 +1,6 @@
-const {
-    borrow,
-    getCurrentByUserId,
-    getCurrentByUserName,
-    returnBook,
-} = require("../models/borrowedBooksModel");
+const { borrow, getCurrentByUserId, getCurrentByUserName, returnBook, } = require("../models/borrowedBooksModel");
+
+const usernamePattern = /^[a-zA-Z0-9_]{3,30}$/;
 
 const borrowCtrl = async (req, res, next) => {
     try {
@@ -24,7 +21,15 @@ const getUserBorrowedBooksCtrl = async (req, res, next) => {
 
 const getUserBorrowedUserBooksCtrl = async (req, res, next) => {
     try {
-        res.json(await getCurrentByUserName(req.params.userName));
+        const { userName } = req.params;
+
+        if (!userName || !usernamePattern.test(userName)) {
+            return res.status(400).json({ message: "Nieprawidłowa nazwa użytkownika." });
+        }
+
+        const borrowedBooks = await getCurrentByUserName(userName);
+
+        res.json(borrowedBooks);
     } catch (err) { next(err); }
 };
 
@@ -38,9 +43,4 @@ const returnCtrl = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
-module.exports = {
-    borrowCtrl,
-    getUserBorrowedBooksCtrl,
-    getUserBorrowedUserBooksCtrl,
-    returnCtrl,
-};
+module.exports = { borrowCtrl, getUserBorrowedBooksCtrl, getUserBorrowedUserBooksCtrl, returnCtrl, };

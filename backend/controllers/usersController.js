@@ -1,11 +1,18 @@
 const { findByUserName, addUser } = require("../models/usersModel");
 
+const usernamePattern = /^[a-zA-Z0-9_]{3,30}$/;
+
 const registerCtrl = async (req, res, next) => {
     try {
         const { UserName, UserPassword } = req.body;
-        if (!UserName || !UserPassword) {
-            return res.status(400).json({ message: "Nazwa użytkownika i hasło są wymagane!" });
+
+        if (!UserName || !usernamePattern.test(UserName)) {
+            return res.status(400).json({ message: "Nieprawidłowa nazwa użytkownika." });
         }
+        if (!UserPassword || UserPassword.length < 5 || UserPassword.length > 100) {
+            return res.status(400).json({ message: "Nieprawidłowe hasło." });
+        }
+
         const exists = await findByUserName(UserName);
         if (exists) return res.status(400).json({ message: "Użytkownik o tej nazwie już istnieje!" });
 
@@ -16,9 +23,17 @@ const registerCtrl = async (req, res, next) => {
 
 const loginCtrl = async (req, res, next) => {
     try {
-        const { username, password } = req.body;
-        const user = await findByUserName(username);
-        if (!user || password !== user.UserPassword) {
+        const { UserName, UserPassword } = req.body;
+
+        if (!UserName || !usernamePattern.test(UserName)) {
+            return res.status(400).json({ message: "Nieprawidłowa nazwa użytkownika." });
+        }
+        if (!UserPassword || UserPassword.length < 5 || UserPassword.length > 100) {
+            return res.status(400).json({ message: "Nieprawidłowe hasło." });
+        }
+
+        const user = await findByUserName(UserName);
+        if (!user || UserPassword !== user.UserPassword) {
             return res.status(400).json({ message: "Nieprawidłowa nazwa użytkownika lub hasło!" });
         }
         res.json({

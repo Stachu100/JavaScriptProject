@@ -14,10 +14,10 @@
 
     <form id="bookForm" enctype="multipart/form-data">
         <label for="author">Autor:</label>
-        <input type="text" id="author" name="author" required>
+        <input type="text" id="author" name="author" required pattern="^[\p{L}\s.'-]{2,100}$" title="2-100 znaków, litery">
         
         <label for="title">Tytuł:</label>
-        <input type="text" id="title" name="title" required>
+        <input type="text" id="title" name="title" required minlength="2" maxlength="100" title="2-100 znaków">
         
         <label for="genre">Gatunek:</label>
         <select id="genre" name="genre" required>
@@ -33,7 +33,7 @@
         </select>
 
         <label for="maxDays">Maksymalna liczba dni wypożyczenia:</label>
-        <input type="number" id="maxDays" name="maxDays">
+        <input type="number" id="maxDays" name="maxDays" min="1" required>
 
         <label for="cover">Zdjęcie książki:</label>
         <input type="file" id="cover" name="cover" accept="image/*">

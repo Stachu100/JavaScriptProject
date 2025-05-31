@@ -7,15 +7,14 @@
 }
 
 .books-carousel {
-    display: flex;
-    justify-content: center;
-    overflow-x: auto;
     padding: 20px 0;
-    gap: 20px;
 }
 
 .books-list {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
 }
 
 .book-card {

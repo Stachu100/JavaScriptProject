@@ -15,10 +15,10 @@
     <main>
         <form enctype="multipart/form-data">
             <label for="login">Login:</label>
-            <input type="text" id="login" name="login" required>
+            <input type="text" id="login" name="login" pattern="^[a-zA-Z0-9_]{3,30}$" minlength="3" maxlength="30" required>
             
             <label for="password">Hasło:</label>
-            <input type="text" id="password" name="password" required>
+            <input type="text" id="password" name="password" minlength="5" maxlength="100" required>
 
             <button type="submit">Zarejestruj się</button>
         </form>

@@ -22,6 +22,11 @@ app.use("/users", userRoutes);
 app.use("/borrowedBooks", borrowedBooksRoutes);
 app.use("/historyBooks", historyBooksRoutes);
 
+// Globalna obsługa błędów
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || 500).json({ message: err.message || "Błąd serwera" });
+});
 
 // Uruchomienie serwera
 app.listen(PORT, () => {

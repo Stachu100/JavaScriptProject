@@ -3,8 +3,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const response = await fetch("/books/getBooks");
         const books = await response.json();
 
-        const booksContainer = document.querySelector(".books-carousel");
-        const genreFilter = document.getElementById("genreFilter");
+        const booksContainer = document.getElementById("books-list");
         const user = JSON.parse(localStorage.getItem("user"));
 
         function renderBooks(filteredBooks) {

@@ -27,7 +27,7 @@ async function getCurrentByUserId(userId) {
 async function getCurrentByUserName(userName) {
     const db = await connectDB();
     return db.all(
-        `SELECT Books.*, BorrowedBooks.ReturnDate
+        `SELECT Books.*, BorrowedBooks.UserId, BorrowedBooks.ReturnDate
          FROM BorrowedBooks
          JOIN Books  ON BorrowedBooks.BookId = Books.Id
          JOIN Users  ON BorrowedBooks.UserId = Users.Id

@@ -23,9 +23,12 @@ async function getById(id) {
     return db.get("SELECT * FROM Books WHERE Id = ?", [id]);
 }
 
-async function updateBook(sql, params) {
+async function editBook(id, { Title, Author, Genre, MaxDays, Image }) {
     const db = await connectDB();
-    return db.run(sql, params);
+    return db.run(
+        "UPDATE Books SET Title = ?, Author = ?, Genre = ?, MaxDays = ?, Image = ? WHERE Id = ?",
+        [Title, Author, Genre, MaxDays, Image, id]
+    );
 }
 
-module.exports = { addBook, getAllAvailable, deleteBook, getById, updateBook };
+module.exports = { addBook, getAllAvailable, deleteBook, getById, editBook };

@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const borrowedBooksContainer = document.querySelector(".borrowed-books-container");
     const adminSection = document.getElementById("admin-section");
     const fetchCurrentBtn = document.getElementById("fetchCurrentBtn");
-    const userIdInput = document.getElementById("userIdInput");
+    const userNameInput = document.getElementById("userNameInput");
     const userBorrowBooks = document.querySelector(".user-borrow");
 
     if (user && user.username) {
@@ -162,11 +162,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     
 
     fetchCurrentBtn.addEventListener("click", function () {
-        const userName = userIdInput.value.trim();
+        const userName = userNameInput.value.trim();
         if (!userName) {
             alert("Podaj ID użytkownika!");
             return;
         }
+
+        const usernamePattern = /^[a-zA-Z0-9_]{3,30}$/;
+        if (!usernamePattern.test(userName)) {
+            alert("Nazwa użytkownika musi mieć 3–30 znaków i może zawierać tylko litery, cyfry i _.");
+            return;
+        }
+        
         fetchUserBorrow(userName);
     });
 
