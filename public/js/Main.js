@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     logoutLink.addEventListener("click", function (event) {
         event.preventDefault();
         localStorage.removeItem("user");
-        window.location.href = "/Index.html";
+        window.location.href = "/index.html";
     });
 
     window.addEventListener("pageshow", function (event) {

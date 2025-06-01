@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     editBtn.textContent = "Edytuj";
                     editBtn.addEventListener("click", function () {
                         localStorage.setItem("editBook", JSON.stringify(book));
-                        window.location.replace("/EditBook.html");
+                        window.location.replace("/edit-book.html");
                     });
 
                     bookCard.appendChild(deleteBtn);
