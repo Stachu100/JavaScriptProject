@@ -1,7 +1,6 @@
 {
   "name": "javascriptproject",
   "version": "1.0.0",
-  "main": "DashBoard.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dbinstall": "node setup-database.js",
