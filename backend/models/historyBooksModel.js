@@ -20,9 +20,11 @@ async function getAll() {
         `SELECT Books.*,
                 HistoryBorrowedBooks.BorrowedDate,
                 HistoryBorrowedBooks.ReturnedDate,
-                HistoryBorrowedBooks.IsReturned
+                HistoryBorrowedBooks.IsReturned,
+                Users.UserName
          FROM HistoryBorrowedBooks
-         JOIN Books ON HistoryBorrowedBooks.BookId = Books.Id`
+         JOIN Books ON HistoryBorrowedBooks.BookId = Books.Id
+         JOIN Users ON HistoryBorrowedBooks.UserId = Users.Id`
     );
 }
 
