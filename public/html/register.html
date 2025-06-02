@@ -15,7 +15,7 @@
     <main>
         <form enctype="multipart/form-data">
             <label for="login">Login:</label>
-            <input type="text" id="login" name="login" pattern="^[a-zA-Z0-9_]{3,30}$" minlength="3" maxlength="30" required>
+            <input type="text" id="login" name="login" pattern="[\p{L}\p{N}_]{3,30}" minlength="3" maxlength="30" required>
             
             <label for="password">Hasło:</label>
             <input type="text" id="password" name="password" minlength="5" maxlength="100" required>

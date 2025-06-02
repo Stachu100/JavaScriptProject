@@ -1,6 +1,6 @@
 const { findByUserName, addUser } = require("../models/usersModel");
 
-const usernamePattern = /^[a-zA-Z0-9_]{3,30}$/;
+const usernamePattern = /^[\p{L}\p{N}_]{3,30}$/u;
 
 const registerCtrl = async (req, res, next) => {
     try {

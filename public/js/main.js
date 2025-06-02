@@ -109,6 +109,20 @@ document.addEventListener("DOMContentLoaded", async function () {
                     const bookAuthor = document.createElement("p");
                     bookAuthor.classList.add("book-author");
                     bookAuthor.textContent = book.Author;
+
+                    const returnDate = new Date(book.ReturnDate);
+                    const currentDate = new Date();
+                    const diffTime = returnDate - currentDate;
+                    const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    const daysRemainingElement = document.createElement("p");
+                    daysRemainingElement.classList.add("days-remaining");
+
+                    if (daysRemaining < 0) {
+                        daysRemainingElement.textContent = "Minął termin zwrotu książki.";
+                    } else {
+                    daysRemainingElement.textContent = `Pozostało dni do zwrotu: ${daysRemaining}`;
+                    }
     
                     const returnBtn = document.createElement("button");
                     returnBtn.classList.add("return-btn");
@@ -147,6 +161,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     
                     bookDetails.appendChild(bookTitle);
                     bookDetails.appendChild(bookAuthor);
+                    bookDetails.appendChild(daysRemainingElement);
                     bookDetails.appendChild(returnBtn);
                     bookCard.appendChild(bookImage);
                     bookCard.appendChild(bookDetails);
@@ -168,7 +183,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             return;
         }
 
-        const usernamePattern = /^[a-zA-Z0-9_]{3,30}$/;
+        const usernamePattern = /^[\p{L}\p{N}_]{3,30}$/u;
         if (!usernamePattern.test(userName)) {
             alert("Nazwa użytkownika musi mieć 3–30 znaków i może zawierać tylko litery, cyfry i _.");
             return;

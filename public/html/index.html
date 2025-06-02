@@ -13,7 +13,7 @@
             <form id="loginForm">
 				<div class="mb-3">
 					<label for="username" class="form-label">Nazwa użytkownika</label>
-					<input type="text" class="form-control" id="username" minlength="3" maxlength="30" required>
+					<input type="text" class="form-control" id="username" pattern="[\p{L}\p{N}_]{3,30}" minlength="3" maxlength="30" required>
 				</div>
 				<div class="mb-3">
 					<label for="password" class="form-label">Hasło</label>
