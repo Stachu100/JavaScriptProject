@@ -6,8 +6,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const Login = document.getElementById("login").value;
         const Password = document.getElementById("password").value;
+
         if (!Login || !Password) {
             alert("Podaj dane!");
+            return;
+        }
+
+        const usernamePattern = /^[\p{L}\p{N}_]{3,30}$/u;
+        if (!usernamePattern.test(Login)) {
+            alert("Nazwa użytkownika może zawierać tylko litery, cyfry i znak podkreślenia, długość od 3 do 30 znaków.");
+            return;
+        }
+
+        if (Password.length < 5 || Password.length > 100) {
+            alert("Hasło musi mieć od 5 do 100 znaków.");
             return;
         }
 
@@ -30,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
             form.reset();
         } catch (error) {
             console.error("Błąd dodawania Użytkownika:", error);
+            alert("Wystąpił błąd podczas rejestracji.");
         }
     });
 });

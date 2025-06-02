@@ -23,6 +23,18 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        const pattern = /^[\p{L}\p{N}\s.'-]{2,50}$/u;
+
+        if (!pattern.test(title)) {
+            alert("Tytuł musi mieć 2–50 znaków i może zawierać litery, cyfry, spacje, kropki, myślniki i apostrofy.");
+        return;
+        }
+
+        if (!pattern.test(author)) {
+            alert("Autor musi mieć 2–50 znaków i może zawierać litery, cyfry, spacje, kropki, myślniki i apostrofy.");
+        return;
+        }
+
         try {
             let response;
             if (editBook) {

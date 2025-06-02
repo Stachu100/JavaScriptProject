@@ -5,7 +5,7 @@ const { addBook, getAllAvailable, deleteBook, getById, editBook } = require("../
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
-const bookPattern = /^[\p{L}\s.'-]{2,50}$/u;
+const bookPattern = /^[\p{L}\p{N}\s.'-]{2,50}$/u;
 
 const addBookCtrl = [
     upload.single("Image"),
@@ -14,10 +14,10 @@ const addBookCtrl = [
             const { Title, Author, Genre, MaxDays } = req.body;
             
             if (!Author || !bookPattern.test(Author)) {
-              return res.status(400).json({ message: "Niepoprawny autor (2-50 znaków, litery i '.-)" });
+              return res.status(400).json({ message: "Niepoprawny autor (2-50 znaków, litery, cyfry i '.-)" });
             }
             if (!Title || !bookPattern.test(Title)) {
-              return res.status(400).json({ message: "Tytuł musi mieć (2-50 znaków, litery i '.-)" });
+              return res.status(400).json({ message: "Tytuł musi mieć (2-50 znaków, litery, cyfry i '.-)" });
             }
             const genres = ["Fantastyka", "Science Fiction", "Kryminał", "Horror", "Romans", "Przygodowa", "Biografia", "Podrecznik", "Inne"];
             if (!Genre || !genres.includes(Genre)) {
@@ -83,10 +83,10 @@ const editBookCtrl = [
       const { Title, Author, Genre, MaxDays } = req.body;
 
       if (!Author || bookPattern.test(Author)) {
-        return res.status(400).json({ message: "Niepoprawny autor (2-50 znaków, litery i '.-)" });
+        return res.status(400).json({ message: "Niepoprawny autor (2-50 znaków, litery, cyfry i '.-)" });
       }
       if (!Title || bookPattern.test(Title)) {
-        return res.status(400).json({ message: "Tytuł musi mieć (2-50 znaków, litery i '.-)" });
+        return res.status(400).json({ message: "Tytuł musi mieć (2-50 znaków, litery, cyfry i '.-)" });
       }
       const genres = ["Fantastyka", "Science Fiction", "Kryminał", "Horror", "Romans", "Przygodowa", "Biografia", "Podrecznik", "Inne"];
       if (!Genre || !genres.includes(Genre)) {
