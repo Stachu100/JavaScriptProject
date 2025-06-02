@@ -19,7 +19,7 @@ const fs = require('fs');
       Id            INTEGER PRIMARY KEY AUTOINCREMENT,
       UserName      TEXT    NOT NULL UNIQUE,
       UserPassword  TEXT    NOT NULL,
-      IsAdmin       INTEGER NOT NULL DEFAULT 0
+      IsAdmin       BOOLEAN NOT NULL DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS Books (
@@ -29,7 +29,7 @@ const fs = require('fs');
       Image       TEXT,
       MaxDays     INTEGER,
       Genre       TEXT    NOT NULL,
-      IsBorrowed  INTEGER NOT NULL DEFAULT 0
+      IsBorrowed  BOOLEAN NOT NULL DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS BorrowedBooks (
