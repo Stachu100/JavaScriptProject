@@ -27,7 +27,7 @@ const fs = require('fs');
       Title       TEXT    NOT NULL,
       Author      TEXT    NOT NULL,
       Image       TEXT,
-      MaxDays     INTEGER,
+      MaxDays     INTEGER NOT NULL,
       Genre       TEXT    NOT NULL,
       IsBorrowed  BOOLEAN NOT NULL DEFAULT 0
     );
@@ -48,7 +48,7 @@ const fs = require('fs');
       BookId        INTEGER NOT NULL,
       BorrowedDate  DATETIME NOT NULL,
       ReturnedDate  DATETIME,
-      IsReturned    INTEGER,
+      IsReturned    BOOLEAN NOT NULL DEFAULT 0,
       FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE,
       FOREIGN KEY (BookId) REFERENCES Books(Id) ON DELETE CASCADE
     );
