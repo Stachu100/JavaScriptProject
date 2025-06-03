@@ -28,6 +28,11 @@ document.addEventListener("DOMContentLoaded", async function () {
                 bookAuthor.classList.add("book-author");
                 bookAuthor.textContent = book.Author;
 
+                const maxDaysInfo = document.createElement("p");
+                maxDaysInfo.classList.add("max-days-info");
+                const dayText = book.MaxDays === 1 ? "dzień" : "dni";
+                maxDaysInfo.textContent = `Czas wypożyczenia: ${book.MaxDays} ${dayText}`;
+
                 const borrowBtn = document.createElement("button");
                 borrowBtn.classList.add("borrow-btn");
                 borrowBtn.textContent = "Wypożycz";
@@ -106,6 +111,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 bookDetails.appendChild(bookAuthor);
                 bookCard.appendChild(bookImage);
                 bookCard.appendChild(bookDetails);
+                bookDetails.appendChild(maxDaysInfo);
                 bookCard.appendChild(borrowBtn);
 
                 booksContainer.appendChild(bookCard);

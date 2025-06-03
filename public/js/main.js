@@ -176,21 +176,41 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
     
 
-    fetchCurrentBtn.addEventListener("click", function () {
-        const userName = userNameInput.value.trim();
-        if (!userName) {
-            alert("Podaj ID użytkownika!");
+    fetchCurrentBtn.addEventListener("click", async function () {
+    const userName = userNameInput.value.trim();
+
+    if (!userName) {
+        alert("Podaj ID użytkownika!");
+        return;
+    }
+
+    const usernamePattern = /^[\p{L}\p{N}_]{3,30}$/u;
+    if (!usernamePattern.test(userName)) {
+        alert("Nazwa użytkownika musi mieć 3–30 znaków i może zawierać tylko litery, cyfry i _.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/users/exists/${userName}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.message || "Użytkownik nie istnieje.");
             return;
         }
 
-        const usernamePattern = /^[\p{L}\p{N}_]{3,30}$/u;
-        if (!usernamePattern.test(userName)) {
-            alert("Nazwa użytkownika musi mieć 3–30 znaków i może zawierać tylko litery, cyfry i _.");
-            return;
-        }
-        
         fetchUserBorrow(userName);
-    });
+        userNameInput.value = '';
+        const currentUserInfo = document.getElementById("currentUserInfo");
+        if (currentUserInfo) {
+            currentUserInfo.textContent = `Wypożyczenia użytkownika: ${userName}`;
+        }
+
+    } catch (error) {
+        alert("Wystąpił błąd podczas sprawdzania użytkownika.");
+        console.error(error);
+    }
+});
 
     logoutLink.addEventListener("click", function (event) {
         event.preventDefault();

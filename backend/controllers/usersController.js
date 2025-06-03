@@ -43,4 +43,21 @@ const loginCtrl = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
-module.exports = { registerCtrl, loginCtrl };
+const checkUserExistsCtrl = async (req, res, next) => {
+    try {
+        const { username } = req.params;
+
+        if (!username || !usernamePattern.test(username)) {
+            return res.status(400).json({ message: "Nieprawidłowa nazwa użytkownika." });
+        }
+
+        const user = await findByUserName(username);
+        if (!user) {
+            return res.status(404).json({ message: "Użytkownik nie istnieje." });
+        }
+
+        res.json({ exists: true });
+    } catch (err) { next(err); }
+};
+
+module.exports = { registerCtrl, loginCtrl, checkUserExistsCtrl };
