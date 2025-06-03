@@ -82,10 +82,10 @@ const editBookCtrl = [
       const { id } = req.params;
       const { Title, Author, Genre, MaxDays } = req.body;
 
-      if (!Author || bookPattern.test(Author)) {
+      if (!Author || !bookPattern.test(Author)) {
         return res.status(400).json({ message: "Niepoprawny autor (2-50 znaków, litery, cyfry i '.-)" });
       }
-      if (!Title || bookPattern.test(Title)) {
+      if (!Title || !bookPattern.test(Title)) {
         return res.status(400).json({ message: "Tytuł musi mieć (2-50 znaków, litery, cyfry i '.-)" });
       }
       const genres = ["Fantastyka", "Science Fiction", "Kryminał", "Horror", "Romans", "Przygodowa", "Biografia", "Podrecznik", "Inne"];
