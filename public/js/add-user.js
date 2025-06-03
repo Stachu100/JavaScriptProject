@@ -4,28 +4,28 @@ document.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const Login = document.getElementById("login").value;
-        const Password = document.getElementById("password").value;
+        const login = document.getElementById("login").value;
+        const password = document.getElementById("password").value;
 
-        if (!Login || !Password) {
+        if (!login || !password) {
             alert("Podaj dane!");
             return;
         }
 
         const usernamePattern = /^[\p{L}\p{N}_]{3,30}$/u;
-        if (!usernamePattern.test(Login)) {
+        if (!usernamePattern.test(login)) {
             alert("Nazwa użytkownika może zawierać tylko litery, cyfry i znak podkreślenia, długość od 3 do 30 znaków.");
             return;
         }
 
-        if (Password.length < 5 || Password.length > 100) {
+        if (password.length < 5 || password.length > 100) {
             alert("Hasło musi mieć od 5 do 100 znaków.");
             return;
         }
 
         const formData = {
-            UserName: Login,
-            UserPassword: Password
+            UserName: login,
+            UserPassword: password
         };
 
         try {
